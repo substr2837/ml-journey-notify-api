@@ -1,13 +1,13 @@
 ThisBuild / scalaVersion := "2.13.10"
 
 ThisBuild / version := "1.0-SNAPSHOT"
-
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
   .settings(
     name := """ml-journey-notify-api""",
     libraryDependencies ++= Seq(
       guice,
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value,
       "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
     )
   )
