@@ -3,6 +3,7 @@ package controllers
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
+import service.CheckProcessor
 @Singleton
 class CheckGoalController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
   case class CheckGoalRequest(userAction: String, realGoal: String)
@@ -16,6 +17,8 @@ class CheckGoalController @Inject()(val controllerComponents: ControllerComponen
       jsonObject.flatMap(
         Json.fromJson[CheckGoalRequest](_).asOpt
       )
+    val checkProcessor = CheckProcessor
+    checkProcessor.checkGoal(checkRequest.orNull.realGoal, checkRequest.orNull.userAction )
     val checkGoalResponse: CheckGoalResponse = CheckGoalResponse(result = "test", reduceAmount = 100)
     Ok(Json.toJson(checkGoalResponse))
   }
