@@ -7,7 +7,7 @@ import service.CheckProcessor
 @Singleton
 class CheckGoalController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
   case class CheckGoalRequest(userAction: String, realGoal: String)
-  case class CheckGoalResponse(result: String, reduceAmount: Int)
+  case class CheckGoalResponse(result: Double, reduceAmount: Int)
   implicit val checkGoalRequestJson: OFormat[CheckGoalRequest] = Json.format[CheckGoalRequest]
   implicit val checkGoalResponseJson: OFormat[CheckGoalResponse] = Json.format[CheckGoalResponse]
   def check(): Action[AnyContent] = Action { implicit request =>
@@ -18,8 +18,8 @@ class CheckGoalController @Inject()(val controllerComponents: ControllerComponen
         Json.fromJson[CheckGoalRequest](_).asOpt
       )
     val checkProcessor = CheckProcessor
-    checkProcessor.checkGoal(checkRequest.orNull.realGoal, checkRequest.orNull.userAction )
-    val checkGoalResponse: CheckGoalResponse = CheckGoalResponse(result = "test", reduceAmount = 100)
+    val result = checkProcessor.checkGoal(checkRequest.orNull.realGoal, checkRequest.orNull.userAction )
+    val checkGoalResponse: CheckGoalResponse = CheckGoalResponse(result = result, reduceAmount = 100)
     Ok(Json.toJson(checkGoalResponse))
   }
 }
