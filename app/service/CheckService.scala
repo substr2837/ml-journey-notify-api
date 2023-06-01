@@ -11,7 +11,7 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.sql.SparkSession
 import scala.math._
 
-object CheckProcessor {
+object CheckService {
 
   implicit val codec: Codec = Codec("iso-8859-1")
   codec.onMalformedInput(CodingErrorAction.REPLACE)
