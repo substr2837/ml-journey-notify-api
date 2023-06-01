@@ -17,26 +17,24 @@ object CheckProcessor {
   codec.onMalformedInput(CodingErrorAction.REPLACE)
   codec.onUnmappableCharacter(CodingErrorAction.REPLACE)
 
-  def checkGoal(goal: String, action: String): Unit = {
-    if(goal == null || action == null)
-      return
+  def checkGoal(goal: String, action: String): Double = {
+    if (goal == null || action == null)
+      0
     val yourGoal: List[Float] = toListFloat(createWordEmbedding(goal).toString)
     val yourAction: List[Float] = toListFloat(createWordEmbedding(action).toString)
     cosineSimilarity(yourGoal, yourAction)
   }
 
   def cosineSimilarity(vec1: List[Float], vec2: List[Float]): Double = {
-    val sumVec1Vec2 = (for (
-      i <- vec1.indices;
-      j <- vec2.indices
-    ) yield vec1(i) * vec2(j)).sum
+    val sumVec1Vec2 = (for (i <- vec1.indices)
+      yield vec1(i) * vec2(i)).sum
     val sumVec1 = sqrt((for (
       i <- vec1.indices
-    ) yield pow(i, 2)).sum)
+    ) yield pow(vec1(i), 2)).sum)
     val sumVec2 = sqrt((for (
       i <- vec2.indices
-    ) yield pow(i, 2)).sum)
-    abs(sumVec1Vec2 / (sumVec1 * sumVec2))
+    ) yield pow(vec2(i), 2)).sum)
+    sumVec1Vec2 / (sumVec1 * sumVec2)
   }
 
   def toListFloat(text: String): List[Float] = {
@@ -77,7 +75,7 @@ object CheckProcessor {
         embeddingsSentence,
         embeddingsEnd
       ))
-    val data = Seq("This is a sentence").toDF("text")
+    val data = Seq(text).toDF("text")
     pipeLine
       .fit(data).transform(data)
       .select("last_embeddings").collectAsList()
