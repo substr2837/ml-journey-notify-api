@@ -2,6 +2,7 @@ package service
 
 import com.johnsnowlabs.nlp.DocumentAssembler
 import com.johnsnowlabs.nlp.annotator.SentenceEmbeddings
+
 import java.nio.charset.CodingErrorAction
 import scala.io.Codec
 import com.johnsnowlabs.nlp.annotators.Tokenizer
@@ -9,6 +10,9 @@ import com.johnsnowlabs.nlp.base.EmbeddingsFinisher
 import com.johnsnowlabs.nlp.embeddings.WordEmbeddingsModel
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.sql.SparkSession
+import org.joda.time.DateTime
+
+import java.util.UUID
 import scala.math._
 
 object CheckService {
@@ -80,5 +84,10 @@ object CheckService {
       .fit(data).transform(data)
       .select("last_embeddings").collectAsList()
       .get(0).get(0)
+  }
+
+  def generateReqNo(): String = {
+    val randNum = UUID.randomUUID().toString.substring(0, 7)
+    "REQ" + randNum
   }
 }
