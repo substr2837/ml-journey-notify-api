@@ -1,18 +1,16 @@
-package service
+package util
 
 import com.johnsnowlabs.nlp.DocumentAssembler
 import com.johnsnowlabs.nlp.annotator.SentenceEmbeddings
-
-import java.nio.charset.CodingErrorAction
-import scala.io.Codec
 import com.johnsnowlabs.nlp.annotators.Tokenizer
 import com.johnsnowlabs.nlp.base.EmbeddingsFinisher
 import com.johnsnowlabs.nlp.embeddings.WordEmbeddingsModel
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.sql.SparkSession
-import org.joda.time.DateTime
 
+import java.nio.charset.CodingErrorAction
 import java.util.UUID
+import scala.io.Codec
 import scala.math._
 
 object CheckService {

@@ -13,7 +13,8 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
 class CheckHistoryService @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-(implicit ec: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+                                   (implicit ec: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile] {
+
   import profile.api._
 
   protected implicit val localDateColumnType: JdbcType[LocalDate]
@@ -36,7 +37,7 @@ class CheckHistoryService @Inject()(protected val dbConfigProvider: DatabaseConf
 
   def modifyLatestAccess(id: Int): Unit = {
     val account = TableQuery[Account]
-    val q = for{a <- account if a.id === id} yield a.latest_access
+    val q = for {a <- account if a.id === id} yield a.latest_access
     val updateAction = q.update(LocalDate.now())
     Await.result(db.run(updateAction), 4.seconds)
   }
@@ -51,7 +52,7 @@ class CheckHistoryService @Inject()(protected val dbConfigProvider: DatabaseConf
 
   def checkAccountIsExist(address: String): Int = {
     val account = TableQuery[Account]
-    val query: Future[List[Int]] = db.run{
+    val query: Future[List[Int]] = db.run {
       account.filter(_.address === address).map(_.id).to[List].result
     }
     val result = Option(Await.result(query, 4.seconds)).get

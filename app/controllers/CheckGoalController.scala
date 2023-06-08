@@ -3,9 +3,9 @@ package controllers
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
-import service.{CheckHistoryService, CheckService}
+import service.{CheckHistoryService, ServerParameterService}
 @Singleton
-class CheckGoalController @Inject()(val controllerComponents: ControllerComponents, val checkHistoryService: CheckHistoryService) extends BaseController {
+class CheckGoalController @Inject()(val controllerComponents: ControllerComponents, val checkHistoryService: CheckHistoryService, val serverParemeterService: ServerParameterService) extends BaseController {
   case class CheckGoalRequest(userAction: String, realGoal: String, address: String)
   case class CheckGoalResponse(result: String)
   case class CheckResultRequest(request_no: String)
@@ -40,7 +40,9 @@ class CheckGoalController @Inject()(val controllerComponents: ControllerComponen
     implicit request =>
       val jsonObject = request.body.asJson
       val checkResultRequest: Option[CheckResultRequest] = jsonObject.flatMap(Json.fromJson[CheckResultRequest](_).asOpt)
-      val checkGoalResponse: CheckGoalResponse = CheckGoalResponse(result = checkHistoryService.getCheckResult(checkResultRequest.orNull.request_no))
+      val result = checkHistoryService.getCheckResult(checkResultRequest.orNull.request_no)
+      val existingTreshold = serverParemeterService.getServerParam(JourneyConstants.checkTreshold)
+      val checkGoalResponse: CheckGoalResponse = CheckGoalResponse(if (result.toInt > existingTreshold) "success" else "failed")
       Ok(Json.toJson(checkGoalResponse))
   }
 }
