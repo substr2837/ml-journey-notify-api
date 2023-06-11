@@ -1,4 +1,4 @@
-package util
+package service
 
 import com.johnsnowlabs.nlp.DocumentAssembler
 import com.johnsnowlabs.nlp.annotator.SentenceEmbeddings

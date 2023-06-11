@@ -37,9 +37,11 @@ class ServerParameterService @Inject()(val dbConfigProvider: DatabaseConfigProvi
 
   def getServerParam(param: String): Int = {
     val query = db.run {
-      serverParameter.filter(_.key === "param").map(_.id).to[List].result
+      serverParameter.filter(_.key === param).map(_.id).to[List].result
     }
     val result = Await.result(query, 4.seconds)
-    Option(result.head).getOrElse(0)
+    if (result.isEmpty)
+      throw new RuntimeException("Server Param not found")
+    result.head
   }
 }

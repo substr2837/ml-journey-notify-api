@@ -3,7 +3,7 @@ package controllers
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
-import service.{CheckHistoryService, ServerParameterService}
+import service.{CheckHistoryService, CheckService, JourneyConstants, ServerParameterService}
 @Singleton
 class CheckGoalController @Inject()(val controllerComponents: ControllerComponents, val checkHistoryService: CheckHistoryService, val serverParemeterService: ServerParameterService) extends BaseController {
   case class CheckGoalRequest(userAction: String, realGoal: String, address: String)
@@ -30,7 +30,7 @@ class CheckGoalController @Inject()(val controllerComponents: ControllerComponen
       } else {
         checkHistoryService.modifyLatestAccess(checkExistingId)
       }
-      checkHistoryService.createHistory(checkExistingId, checkRequest.orNull.realGoal, checkRequest.orNull.userAction, checkResult.toString, generateReqNo)
+      checkHistoryService.createHistory(checkExistingId, checkRequest.orNull.realGoal, checkRequest.orNull.userAction, checkResult.toFloat, generateReqNo)
     }).start()
     val checkGoalResponse: CheckGoalResponse = CheckGoalResponse(result = generateReqNo)
     Ok(Json.toJson(checkGoalResponse))

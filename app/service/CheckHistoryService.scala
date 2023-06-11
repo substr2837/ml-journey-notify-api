@@ -42,7 +42,7 @@ class CheckHistoryService @Inject()(protected val dbConfigProvider: DatabaseConf
     Await.result(db.run(updateAction), 4.seconds)
   }
 
-  def createHistory(account_id: Int, usergoal: String, useraction: String, check_result: String, request_no: String): Unit = {
+  def createHistory(account_id: Int, usergoal: String, useraction: String, check_result: Float, request_no: String): Unit = {
     val checkHistory = TableQuery[CheckHistory]
     val checkHistoryAction = DBIO.seq(
       checkHistory += (account_id, usergoal, useraction, check_result, LocalDate.now(), request_no)
@@ -59,12 +59,12 @@ class CheckHistoryService @Inject()(protected val dbConfigProvider: DatabaseConf
     if (result.isEmpty) 0 else result.head
   }
 
-  def getCheckResult(request_no: String): String = {
+  def getCheckResult(request_no: String): Float = {
     val checkHistory = TableQuery[CheckHistory]
-    val query: Future[List[String]] = db.run {
+    val query: Future[List[Float]] = db.run {
       checkHistory.filter(_.request_no === request_no).map(_.check_result).to[List].result
     }
     val result = Option(Await.result(query, 4.seconds)).get
-    if (result.isEmpty) "not ready" else result.head
+    result.head
   }
 }

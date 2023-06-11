@@ -7,7 +7,7 @@ import slick.sql.SqlProfile.ColumnOption.SqlType
 
 import java.sql.Date
 
-class CheckHistory(tag: Tag)extends Table[(Int, String, String, String, LocalDate, String)](tag, "check_history"){
+class CheckHistory(tag: Tag)extends Table[(Int, String, String, Float, LocalDate, String)](tag, "check_history"){
   protected implicit val localDateColumnType: JdbcType[LocalDate]
     with BaseTypedType[LocalDate] = MappedColumnType.base[LocalDate, Date](
     it => Date.valueOf(it.toString),
@@ -17,7 +17,7 @@ class CheckHistory(tag: Tag)extends Table[(Int, String, String, String, LocalDat
   def account_id = column[Int]("account_id")
   def user_goal = column[String]("user_goal")
   def user_action = column[String]("user_action")
-  def check_result = column[String]("check_result")
+  def check_result = column[Float]("check_result")
   def created_at =  column[LocalDate]("created_at", SqlType("timestamp not null default now()"))(localDateColumnType)
   def modified_at = column[LocalDate]("modified_at", SqlType("timestamp not null default now()"))(localDateColumnType)
   def request_no = column[String]("request_no")

@@ -16,6 +16,6 @@ class HomePageController @Inject()(val controllerComponents: ControllerComponent
     implicit request =>
       val content = request.body.asJson
       val calculateRequest: Option[CalculateRequest] = content.flatMap(Json.fromJson[CalculateRequest](_).asOpt)
-      Ok(Json.toJson(homePageService.calculatLatestActivity(calculateRequest.orNull.address)))
+      Ok(Json.toJson(homePageService.calculate(calculateRequest.orNull.address)))
   }
 }
